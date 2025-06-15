@@ -1,0 +1,27 @@
+{
+  "name": "simple-rent-contract",
+  "version": "1.0.0",
+  "description": "A simple smart contract for managing rent payments between two parties and a landlord.",
+  "main": "index.js",
+  "scripts": {
+    "test": "truffle test",
+    "migrate": "truffle migrate",
+    "dev": "ganache-cli"
+  },
+  "dependencies": {
+    "truffle": "^5.4.0",
+    "ganache-cli": "^6.12.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0"
+  },
+  "keywords": [
+    "smart contract",
+    "solidity",
+    "rent",
+    "blockchain"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
