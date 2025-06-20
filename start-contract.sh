@@ -1,14 +1,17 @@
 #!/bin/bash
 
-echo "Starting contract deployment and testing..."
+echo "--- Avvio del contratto ---"
 
-echo "Step 1: Migrating contracts..."
+cd ../Applications/ganache
+./ganache-2.7.1-linux-x86_64.AppImage &
+cd ../../simple-rent-contract
+
+sleep 5
+
 truffle migrate --reset
-
-echo "Step 2: Running tests..."
 truffle test
 
-echo "Step 3: Executing force payment script..."
+echo "--- Forza il pagamento ---"
 npx truffle exec scripts/force-payment.js
 
-echo "Contract startup completed!"
+echo "Startup completato!"
