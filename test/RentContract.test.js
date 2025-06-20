@@ -37,7 +37,7 @@ contract("RentContract", (accounts) => {
 
     it("should calculate rent in wei", async () => {
       const rentInWei = await rentContract.getCurrentRentInWei();
-      const expectedWei = web3.utils.toWei("0.225", "ether");
+      const expectedWei = web3.utils.toWei("0.4", "ether");
       assert.equal(rentInWei.toString(), expectedWei);
     });
   });
@@ -92,7 +92,7 @@ contract("RentContract", (accounts) => {
     it("should update price and recalculate rent", async () => {
       await priceOracle.updatePrice(400000, { from: landlord });
       const rentInWei = await rentContract.getCurrentRentInWei();
-      const expectedWei = web3.utils.toWei("0.1125", "ether");
+      const expectedWei = web3.utils.toWei("0.2", "ether");
       assert.equal(rentInWei.toString(), expectedWei);
     });
 

@@ -6,7 +6,10 @@ cd ../Applications/ganache
 ./ganache-2.7.1-linux-x86_64.AppImage &
 cd ../../simple-rent-contract
 
-sleep 5
+while ! nc -z localhost 8545; do
+    sleep 1
+done
+echo "✅ Ganache avviato con successo!"
 
 truffle migrate --reset
 truffle test

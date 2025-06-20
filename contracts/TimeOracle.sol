@@ -71,21 +71,9 @@ contract TimeOracle {
     function setCurrentMonth(uint month) external onlyOwner {
         customCurrentMonth = month;
         useCustomMonth = true;
-        emit CurrentMonthSet(month);
-    }
+        emit CurrentMonthSet(month);    }
     
     function resetToActualTime() external onlyOwner {
         useCustomMonth = false;
-    }
-    
-    function getMonthStartTimestamp(uint month) public view returns (uint) {
-        require(month > 0, "Month must be greater than 0");
-        uint secondsPerMonth = 2629746;
-        return contractStartDate + ((month - 1) * secondsPerMonth);
-    }
-
-    function getPaymentDeadline(uint month) public view returns (uint) {
-        uint monthStartTimestamp = getMonthStartTimestamp(month);
-        return monthStartTimestamp + 2629746 + TOLLERANZA;
     }
 }

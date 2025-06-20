@@ -15,21 +15,21 @@ module.exports = async function(callback) {
     const rentInWei = await rentContract.getCurrentRentInWei();
     console.log(`Quota: ${web3.utils.fromWei(rentInWei, "ether")} ETH`);
 
-    console.log("\n📅 MESE 1:");
+    console.log("\nMESE 1:");
     await newTimeOracle.setCurrentMonth(1, { from: landlord });
     
     await rentContract.payRent(1, { from: tenant1, value: rentInWei });
-    console.log("✅ Tenant1 pagato");
+    console.log("✅ Inquilino 1 ha pagato");
     
     await rentContract.payRent(1, { from: tenant2, value: rentInWei });
-    console.log("✅ Tenant2 pagato");
+    console.log("✅ Inquilino 2 ha pagato");
 
 
-    console.log("\n📅 MESE 2:");
+    console.log("\nMESE 2:");
     await newTimeOracle.setCurrentMonth(2, { from: landlord });
     
     await rentContract.payRent(2, { from: tenant1, value: rentInWei });
-    console.log("✅ Tenant1 pagato");
+    console.log("✅ Inquilino 1 ha pagato");
 
     const month1Status = await rentContract.isRentPaid(1);
     const month2Status = await rentContract.isRentPaid(2);

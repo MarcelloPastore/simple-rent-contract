@@ -24,18 +24,8 @@ contract PriceOracle {
         lastUpdated = block.timestamp;
         emit PriceUpdated(_newPrice, block.timestamp);
     }
-    
-    function getETHPriceInEur() external view returns (uint) {
-        return ethPriceInEur;
-    }
-    
-    function convertEurToWei(uint eurAmount) external view returns (uint) {
+      function convertEurToWei(uint eurAmount) external view returns (uint) {
         require(ethPriceInEur > 0, "ETH price not set");
         return (eurAmount * 1 ether) / ethPriceInEur;
-    }
-    
-    function convertWeiToEur(uint weiAmount) external view returns (uint) {
-        require(ethPriceInEur > 0, "ETH price not set");
-        return (weiAmount * ethPriceInEur) / 1 ether;
     }
 }

@@ -47,12 +47,8 @@ contract RentContract {
         priceOracle = PriceOracle(_priceOracle);
     }
 
-    function getCurrentRentInWei() public view returns (uint) {
-        return priceOracle.convertEurToWei(rentAmountEur);
-    }
-
     function payRent(uint month) public payable onlyTenants {
-        uint requiredWei = getCurrentRentInWei();
+        uint requiredWei = priceOracle.convertEurToWei(rentAmountEur);
         require(msg.value >= requiredWei, "Insufficient payment amount");
         require(!tenantPaidForMonth[month][msg.sender], "You already paid for this month");
         require(timeOracle.isPaymentDue(month), "Payment not yet due for this month");
@@ -78,18 +74,6 @@ contract RentContract {
 
     function isRentPaid(uint month) public view returns (bool) {
         return tenantPaidForMonth[month][tenant1] && tenantPaidForMonth[month][tenant2];
-    }
-
-    function isTenantPaidForMonth(address tenant, uint month) public view returns (bool) {
-        return tenantPaidForMonth[month][tenant];
-    }
-
-    function getCurrentMonth() public view returns (uint) {
-        return timeOracle.getCurrentMonth();
-    }
-
-    function isCurrentRentPaid() public view returns (bool) {
-        return isRentPaid(timeOracle.getCurrentMonth());
     }
 
     function isRentLate(uint month) public view returns (bool) {
@@ -120,10 +104,6 @@ contract RentContract {
         require(!isRentPaid(month), "Cannot assign tenant for already fully paid month");
         whoCanPayForMonth[month] = tenant;
         emit MonthlyAccessGranted(month, tenant);
-    }
-
-    function getMonthlyTenant(uint month) public view returns (address) {
-        return whoCanPayForMonth[month];
     }
 
     function forcePayment(uint month) external onlyLandlord {
@@ -161,5 +141,21 @@ contract RentContract {
         }
         
         return result;
+    }
+
+    function getCurrentRentInWei() public view returns (uint) {
+        return priceOracle.convertEurToWei(rentAmountEur);
+    }
+
+    function isCurrentRentPaid() public view returns (bool) {
+        return isRentPaid(getCurrentMonth());
+    }
+
+    function getCurrentMonth() public view returns (uint) {
+        return timeOracle.getCurrentMonth();
+    }
+
+    function isTenantPaidForMonth(address tenant, uint month) public view returns (bool) {
+        return tenantPaidForMonth[month][tenant];
     }
 }
