@@ -77,23 +77,14 @@ contract TimeOracle {
         useCustomMonth = false;
     }
     
-    // Get timestamp for the start of a specific month
     function getMonthStartTimestamp(uint month) public view returns (uint) {
         require(month > 0, "Month must be greater than 0");
         uint secondsPerMonth = 2629746;
         return contractStartDate + ((month - 1) * secondsPerMonth);
     }
-    
-    // Get deadline timestamp for a specific month (including grace period)
+
     function getPaymentDeadline(uint month) public view returns (uint) {
         uint monthStartTimestamp = getMonthStartTimestamp(month);
         return monthStartTimestamp + 2629746 + TOLLERANZA;
-    }
-    
-    // Set a specific timestamp for testing purposes
-    function setTimestamp(uint timestamp) external onlyOwner {
-        // This function would be used in tests but has no effect in production
-        // since block.timestamp can't be manipulated
-        // It's included here for interface compatibility with test mocks
     }
 }

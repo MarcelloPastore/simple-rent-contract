@@ -1,6 +1,7 @@
 const RentContract = artifacts.require("RentContract");
 const TimeOracle = artifacts.require("TimeOracle");
 const PriceOracle = artifacts.require("PriceOracle");
+const config = require("../config/addresses");
 
 contract("RentContract", (accounts) => {
   let rentContract;
@@ -9,8 +10,8 @@ contract("RentContract", (accounts) => {
   const landlord = accounts[0];
   const tenant1 = accounts[1];
   const tenant2 = accounts[2];
-  const rentAmountEur = 45000;
-  const initialEthPrice = 200000;
+  const rentAmountEur = config.rentAmountEur;
+  const initialEthPrice = config.initialEthPrice;
 
   beforeEach(async () => {
     timeOracle = await TimeOracle.new({ from: landlord });
