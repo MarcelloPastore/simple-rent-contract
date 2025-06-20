@@ -1,27 +1,30 @@
 {
   "name": "simple-rent-contract",
   "version": "1.0.0",
-  "description": "A simple smart contract for managing rent payments between two parties and a landlord.",
+  "description": "Smart contract for rent payments with time oracle",
   "main": "index.js",
   "scripts": {
     "test": "truffle test",
+    "compile": "truffle compile",
     "migrate": "truffle migrate",
-    "dev": "ganache-cli"
-  },
-  "dependencies": {
-    "truffle": "^5.4.0",
-    "ganache-cli": "^6.12.2"
-  },
-  "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^8.4.0"
+    "migrate:reset": "truffle migrate --reset",
+    "console": "truffle console"
   },
   "keywords": [
-    "smart contract",
+    "ethereum",
     "solidity",
     "rent",
-    "blockchain"
+    "oracle",
+    "smart-contract"
   ],
-  "author": "Your Name",
-  "license": "MIT"
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.0",
+    "truffle": "^5.7.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^10.0.0"
+  }
 }

@@ -1,53 +1,119 @@
-# Contratto di Affitto Semplice
+# Simple Rent Contract with Time Oracle
 
-Questo progetto implementa un contratto di affitto semplice utilizzando Solidity, permettendo a due conti di pagare l'affitto a un terzo conto. Il contratto è progettato per scopi educativi ed è distribuito su una blockchain locale Ganache.
+A Solidity smart contract system for managing monthly rent payments between landlords and tenants, enhanced with a time oracle for automated monthly payment tracking.
 
-## Struttura del Progetto
+## Features
 
-- **contracts/RentContract.sol**: Contiene il contratto smart Solidity che definisce la logica per i pagamenti dell'affitto e il monitoraggio dello stato dell'affitto.
-- **migrations/1_deploy_contract.js**: Responsabile della distribuzione del RentContract sulla blockchain Ganache utilizzando il sistema di migrazione di Truffle.
-- **test/RentContract.test.js**: Contiene i test per il RentContract, assicurando che il contratto funzioni come previsto.
-- **truffle-config.js**: File di configurazione per Truffle, che specifica le impostazioni di rete per Ganache e altre configurazioni necessarie.
-- **package.json**: Elenca le dipendenze richieste per il progetto, inclusi Truffle e librerie di test.
-- **.gitignore**: Specifica i file e le directory da ignorare da Git, come node_modules e artefatti di build.
+- Dual Tenant Support: Each tenant pays their share, tracked individually. The month is marked as paid only when both have paid.
+- **Time Oracle Integration**: Automatic month tracking based on blockchain timestamps
+- **Monthly Payment Tracking**: Prevents double payments and tracks payment history for each tenant
+- **Tenant Assignment**: Landlord can assign specific tenants to specific months
+- **Late Payment Detection**: Automatic detection of late payments
+- **Secure Payments**: Direct transfers to landlord upon successful payment
 
-## Per Iniziare
+## Contracts
 
-### Prerequisiti
+### RentContract
+Main contract handling rent payments and tenant management.
 
-- Node.js e npm installati sulla tua macchina.
-- Ganache installato e in esecuzione.
+**Key Functions:**
+- `payRent(uint month)`: Each tenant pays for a month, tracked individually.
+- `payCurrentMonthRent()`: Pay rent for the current month
+- `isRentPaid(uint month)`: True only if both tenants have paid for the month.
+- `isTenantPaidForMonth(address tenant, uint month)`: Check if a tenant has paid for a month.
+- `isCurrentRentPaid()`: Check if current month's rent is paid
+- `isRentLate(uint month)`: Check if payment is late
+- `assignTenantForMonth(uint month, address tenant)`: Assign specific tenant to a month
 
-### Installazione
+### TimeOracle
+Oracle contract providing time-based functionality.
 
-1. Clona il repository:
-   ```
-   git clone <repository-url>
-   cd simple-rent-contract
-   ```
+**Key Functions:**
+- `getCurrentMonth()`: Get current month number
+- `isPaymentDue(uint month)`: Check if payment is due
+- `isPaymentLate(uint month)`: Check if payment is late
+- `updateBaseTimestamp(uint timestamp)`: Update base timestamp (owner only)
 
-2. Installa le dipendenze:
-   ```
-   npm install
-   ```
+## Installation
 
-### Esecuzione del Progetto
+1. Install dependencies:
+```bash
+npm install
+```
 
-1. Avvia Ganache.
-2. Distribuisci il contratto:
-   ```
-   truffle migrate
-   ```
+2. Start Ganache or local blockchain:
+```bash
+ganache-cli
+```
 
-3. Esegui i test:
-   ```
-   truffle test
-   ```
+3. Compile contracts:
+```bash
+npm run compile
+```
 
-## Lavori Futuri
+4. Run migrations:
+```bash
+npm run migrate
+```
 
-Questo progetto è progettato per essere esteso con funzionalità oracle in futuro, consentendo pagamenti di affitto dinamici basati su fonti di dati esterne.
+5. Run tests:
+```bash
+npm test
+```
 
-## Licenza
+## Usage Example
 
-Questo progetto è concesso in licenza sotto la Licenza MIT.
+```javascript
+// Deploy contracts
+const timeOracle = await TimeOracle.new();
+const rentContract = await RentContract.new(
+  landlordAddress,
+  tenant1Address,
+  tenant2Address,
+  rentAmount,
+  timeOracle.address
+);
+
+// Pay current month's rent
+await rentContract.payCurrentMonthRent({ 
+  from: tenant1Address, 
+  value: rentAmount 
+});
+
+// Check if rent is paid
+const isPaid = await rentContract.isCurrentRentPaid();
+console.log("Rent paid:", isPaid);
+```
+
+## Testing
+
+The project includes comprehensive tests covering:
+- Contract deployment and initialization
+- Time oracle integration
+- Rent payment functionality
+- Tenant assignment features
+- Oracle management
+- Edge cases and error handling
+
+Run tests with:
+```bash
+npm test
+```
+
+## Security Features
+
+- **Access Control**: Only landlords can manage oracle and tenant assignments
+- **Payment Validation**: Ensures correct rent amount and prevents overpayment
+- **Double Payment Prevention**: Prevents multiple payments for the same month
+- **Time Validation**: Ensures payments are only made when due
+
+## Network Configuration
+
+The project is configured for:
+- Local development (Ganache)
+- Testnet deployment ready
+- Solidity 0.8.0 compatibility
+
+## License
+
+MIT License - see LICENSE file for details.

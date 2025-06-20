@@ -1,10 +1,22 @@
 const RentContract = artifacts.require("RentContract");
+const TimeOracle = artifacts.require("TimeOracle");
+const PriceOracle = artifacts.require("PriceOracle");
 
 module.exports = function (deployer, network, accounts) {
-  const landlord = "0x8A8336d1Cd08C17c9aB1C8416bf4802db904D5F4"; // Nuovo indirizzo del landlord
-  const tenant1 = "0x836313eE6016bD33E9e9a80e1Bda9D23Cf563b39"; // Indirizzo del primo affittuario
-  const tenant2 = "0xE3e01268f184fb3112cF2d6463bDB67923505096"; // Indirizzo del secondo affittuario
-  const rentAmount = web3.utils.toWei("0.375", "ether"); // Importo dell'affitto in wei
+  const landlord = "0x9d95C74C7da04CC842568a922D2096688c3Db4E9";
+  const tenant1 = "0xe1539f39F74d16839bC9209c90A1aa256D29127d";
+  const tenant2 = "0x6B9f89E2Ac08DD489Bd820bE1E50CcCC81D5b47b";
+  const rentAmountEur = 45000;
 
-  deployer.deploy(RentContract, landlord, tenant1, tenant2, rentAmount);
+  deployer.deploy(TimeOracle)
+    .then(() => deployer.deploy(PriceOracle, 200000))
+    .then(() => deployer.deploy(
+      RentContract, 
+      landlord, 
+      tenant1, 
+      tenant2, 
+      rentAmountEur, 
+      TimeOracle.address,
+      PriceOracle.address
+    ));
 };
