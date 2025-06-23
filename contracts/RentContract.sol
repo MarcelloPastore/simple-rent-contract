@@ -49,12 +49,12 @@ contract RentContract {
 
     function payRent(uint month) public payable onlyTenants {
         uint requiredWei = priceOracle.convertEurToWei(rentAmountEur);
-        require(msg.value >= requiredWei, "Insufficient payment amount");
-        require(!tenantPaidForMonth[month][msg.sender], "You already paid for this month");
-        require(timeOracle.isPaymentDue(month), "Payment not yet due for this month");
-   
+        require(msg.value >= requiredWei, "Importo insufficiente");
+        require(!tenantPaidForMonth[month][msg.sender], "Affitto pagato per questo mese");
+        require(timeOracle.isPaymentDue(month), "Pagamento non dovuto questo mese");
+
         if (whoCanPayForMonth[month] != address(0)) {
-            require(msg.sender == whoCanPayForMonth[month], "Wrong tenant for this month");
+            require(msg.sender == whoCanPayForMonth[month], "Inquilino sbagliato");
         }
 
         tenantPaidForMonth[month][msg.sender] = true;
@@ -100,16 +100,16 @@ contract RentContract {
     }
 
     function assignTenantForMonth(uint month, address tenant) external onlyLandlord {
-        require(tenant == tenant1 || tenant == tenant2, "Invalid tenant address");
-        require(!isRentPaid(month), "Cannot assign tenant for already fully paid month");
+        require(tenant == tenant1 || tenant == tenant2, "Indirizzo inquilino non valido");
+        require(!isRentPaid(month), "Errore pagamento");
         whoCanPayForMonth[month] = tenant;
         emit MonthlyAccessGranted(month, tenant);
     }
 
     function forcePayment(uint month) external onlyLandlord {
-        require(!isRentPaid(month), "Rent already fully paid for this month");
-        require(timeOracle.isPaymentDue(month), "Payment not yet due for this month");
-        
+        require(!isRentPaid(month), "Affitto pagato per questo mese");
+        require(timeOracle.isPaymentDue(month), "Pagamento non ancora dovuto per questo mese");
+
         tenantPaidForMonth[month][tenant1] = true;
         tenantPaidForMonth[month][tenant2] = true;
         
@@ -148,7 +148,7 @@ contract RentContract {
     }
 
     function isCurrentRentPaid() public view returns (bool) {
-        return isRentPaid(getCurrentMonth());
+        return isRentPaid(timeOracle.getCurrentMonth());
     }
 
     function getCurrentMonth() public view returns (uint) {

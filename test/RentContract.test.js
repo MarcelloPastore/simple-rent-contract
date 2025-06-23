@@ -45,9 +45,9 @@ contract("RentContract", (accounts) => {
     
     try {
       await rentContract.payCurrentMonthRent({ from: tenant1, value: rentInWei });
-      assert.fail("Should have thrown");
+      assert.fail("Errore, il pagamento dovrebbe fallire");
     } catch (error) {
-      assert.include(error.message, "You already paid for this month");
+      assert.include(error.message, "Affitto pagato per questo mese");
     }
   });
 
