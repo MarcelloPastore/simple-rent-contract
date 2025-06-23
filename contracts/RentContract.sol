@@ -22,12 +22,12 @@ contract RentContract {
     event RentAmountUpdated(uint newRentAmount);
 
     modifier onlyLandlord() {
-        require(msg.sender == landlord, "Only landlord can call this function");
+        require(msg.sender == landlord, "Funzione riservata al proprietario");
         _;
     }
 
     modifier onlyTenants() {
-        require(msg.sender == tenant1 || msg.sender == tenant2, "Only tenants can pay rent");
+        require(msg.sender == tenant1 || msg.sender == tenant2, "Funzione riservata agli inquilini");
         _;
     }
 

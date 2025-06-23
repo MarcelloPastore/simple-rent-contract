@@ -12,7 +12,7 @@ contract TimeOracle {
     event CurrentMonthSet(uint month);
     
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, "Funzione riservata al proprietario");
         _;
     }
     
@@ -30,7 +30,7 @@ contract TimeOracle {
     }
     
     function getMonthForTimestamp(uint timestamp) public view returns (uint) {
-        require(timestamp >= contractStartDate, "Timestamp before contract start");
+        require(timestamp >= contractStartDate);
         uint secondsPerMonth = 2629746;
         uint monthsSinceStart = (timestamp - contractStartDate) / secondsPerMonth;
         return monthsSinceStart + 1;

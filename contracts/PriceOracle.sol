@@ -9,7 +9,7 @@ contract PriceOracle {
     event PriceUpdated(uint newPrice, uint timestamp);
     
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, "Funzione riservata al proprietario");
         _;
     }
     
