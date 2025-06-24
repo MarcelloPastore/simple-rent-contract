@@ -27,20 +27,21 @@ contract("RentContract", (accounts) => {
   });
 
   it("Test conversione in wei", async () => {
-    const rentInWei = await rentContract.getCurrentRentInWei();
+    const rentInWei = await priceOracle.convertEurToWei(rentAmountEur);
     const expectedWei = web3.utils.toWei((rentAmountEur / initialEthPrice).toString(), "ether");
     assert.equal(rentInWei.toString(), expectedWei);
   });
 
   it("Test pagamento", async () => {
-    const rentInWei = await rentContract.getCurrentRentInWei();
+    const rentInWei = await priceOracle.convertEurToWei(rentAmountEur);
     await rentContract.payCurrentMonthRent({ from: tenant1, value: rentInWei });
     await rentContract.payCurrentMonthRent({ from: tenant2, value: rentInWei });
-    assert.equal(await rentContract.isCurrentRentPaid(), true);
+    const currentMonth = await timeOracle.getCurrentMonth();
+    assert.equal(await rentContract.isRentPaid(currentMonth), true);
   });
 
   it("Test rifiuto pagamento", async () => {
-    const rentInWei = await rentContract.getCurrentRentInWei();
+    const rentInWei = await priceOracle.convertEurToWei(rentAmountEur);
     await rentContract.payCurrentMonthRent({ from: tenant1, value: rentInWei });
     
     try {
@@ -54,19 +55,19 @@ contract("RentContract", (accounts) => {
   it("Test modifica costo affitto", async () => {
     const newPrice = 400000;
     await priceOracle.updatePrice(newPrice, { from: landlord });
-    const rentInWei = await rentContract.getCurrentRentInWei();
+    const rentInWei = await priceOracle.convertEurToWei(rentAmountEur);
     const expectedWei = web3.utils.toWei((rentAmountEur / newPrice).toString(), "ether");
     assert.equal(rentInWei.toString(), expectedWei);
   });
 
   it("Test pagamento incompleto", async () => {
-    const rentInWei = await rentContract.getCurrentRentInWei();
-    const currentMonth = await rentContract.getCurrentMonth();
+    const rentInWei = await priceOracle.convertEurToWei(rentAmountEur);
+    const currentMonth = await timeOracle.getCurrentMonth();
     
     await rentContract.payCurrentMonthRent({ from: tenant1, value: rentInWei });
 
     assert.equal(await rentContract.isTenantPaidForMonth(tenant1, currentMonth), true);
     assert.equal(await rentContract.isTenantPaidForMonth(tenant2, currentMonth), false);
-    assert.equal(await rentContract.isCurrentRentPaid(), false);
+    assert.equal(await rentContract.isRentPaid(currentMonth), false);
   });
 });

@@ -1,18 +1,20 @@
 const RentContract = artifacts.require("RentContract");
 const TimeOracle = artifacts.require("TimeOracle");
+const PriceOracle = artifacts.require("PriceOracle");
 const config = require("../config/addresses");
 
 module.exports = async function(callback) {
   try {
-    const { landlord, tenant1, tenant2 } = config;
+    const { landlord, tenant1, tenant2, rentAmountEur } = config;
 
     console.log("--- Test pagamento ---");
     
     const rentContract = await RentContract.deployed();
     const newTimeOracle = await TimeOracle.new({ from: landlord });
+    const newPriceOracle = await PriceOracle.deployed();
     await rentContract.setTimeOracle(newTimeOracle.address, { from: landlord });
-    
-    const rentInWei = await rentContract.getCurrentRentInWei();
+
+    const rentInWei = await newPriceOracle.convertEurToWei(rentAmountEur);
     console.log(`Quota: ${web3.utils.fromWei(rentInWei, "ether")} ETH`);
 
     console.log("\nMESE 1:");

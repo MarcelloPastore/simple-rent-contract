@@ -129,18 +129,6 @@ contract RentContract {
         return result;
     }
 
-    function getCurrentRentInWei() public view returns (uint) {
-        return priceOracle.convertEurToWei(rentAmountEur);
-    }
-
-    function isCurrentRentPaid() public view returns (bool) {
-        return isRentPaid(timeOracle.getCurrentMonth());
-    }
-
-    function getCurrentMonth() public view returns (uint) {
-        return timeOracle.getCurrentMonth();
-    }
-
     function isTenantPaidForMonth(address tenant, uint month) public view returns (bool) {
         return tenantPaidForMonth[month][tenant];
     }
