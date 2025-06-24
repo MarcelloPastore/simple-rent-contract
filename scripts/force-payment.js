@@ -40,7 +40,7 @@ module.exports = async function(callback) {
     console.log("\nRISULTATO PAGAMENTI:");
     console.log(`Mese 1: ${month1Status ? "✅ COMPLETO" : "❌ INCOMPLETO"} (T1: ${month1Details.tenant1Paid ? "✅" : "❌"}, T2: ${month1Details.tenant2Paid ? "✅" : "❌"})`);
     console.log(`Mese 2: ${month2Status ? "✅ COMPLETO" : "❌ INCOMPLETO"} (T1: ${month2Details.tenant1Paid ? "✅" : "❌"}, T2: ${month2Details.tenant2Paid ? "✅" : "❌"})`);
-    
+
     callback();
   } catch (error) {
     console.error("❌ ERRORE:", error.message);

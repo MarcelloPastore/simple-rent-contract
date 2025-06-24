@@ -14,12 +14,6 @@ contract RentContract {
     
     mapping(uint => mapping(address => bool)) public tenantPaidForMonth;
     mapping(uint => address) public whoCanPayForMonth;
-    
-    event RentPaid(address indexed tenant, uint weiAmount, uint eurAmount, uint month);
-    event TimeOracleUpdated(address newOracle);
-    event PriceOracleUpdated(address newOracle);
-    event MonthlyAccessGranted(uint month, address tenant);
-    event RentAmountUpdated(uint newRentAmount);
 
     modifier onlyLandlord() {
         require(msg.sender == landlord, "Funzione riservata al proprietario");
@@ -58,8 +52,7 @@ contract RentContract {
         }
 
         tenantPaidForMonth[month][msg.sender] = true;
-        emit RentPaid(msg.sender, requiredWei, rentAmountEur, month);
-
+        
         payable(landlord).transfer(requiredWei);
         
         if (msg.value > requiredWei) {
@@ -86,24 +79,20 @@ contract RentContract {
 
     function setTimeOracle(address _timeOracle) external onlyLandlord {
         timeOracle = TimeOracle(_timeOracle);
-        emit TimeOracleUpdated(_timeOracle);
     }
 
     function setPriceOracle(address _priceOracle) external onlyLandlord {
         priceOracle = PriceOracle(_priceOracle);
-        emit PriceOracleUpdated(_priceOracle);
     }
 
     function updateRentAmount(uint _newRentAmountEur) external onlyLandlord {
         rentAmountEur = _newRentAmountEur;
-        emit RentAmountUpdated(_newRentAmountEur);
     }
 
     function assignTenantForMonth(uint month, address tenant) external onlyLandlord {
         require(tenant == tenant1 || tenant == tenant2, "Indirizzo inquilino non valido");
         require(!isRentPaid(month), "Errore pagamento");
         whoCanPayForMonth[month] = tenant;
-        emit MonthlyAccessGranted(month, tenant);
     }
 
     function forcePayment(uint month) external onlyLandlord {
@@ -112,9 +101,6 @@ contract RentContract {
 
         tenantPaidForMonth[month][tenant1] = true;
         tenantPaidForMonth[month][tenant2] = true;
-        
-        emit RentPaid(tenant1, 0, rentAmountEur, month);
-        emit RentPaid(tenant2, 0, rentAmountEur, month);
     }
 
     function getMonthPaymentStatus(uint month) external view returns (bool tenant1Paid, bool tenant2Paid, bool fullyPaid) {

@@ -3,7 +3,7 @@ const TimeOracle = artifacts.require("TimeOracle");
 const PriceOracle = artifacts.require("PriceOracle");
 const config = require("../config/addresses");
 
-module.exports = function (deployer, network, accounts) {
+module.exports = function (deployer) {
   deployer.deploy(TimeOracle)
     .then(() => deployer.deploy(PriceOracle, config.initialEthPrice))
     .then(() => deployer.deploy(

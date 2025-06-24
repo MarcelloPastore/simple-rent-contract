@@ -6,8 +6,6 @@ contract PriceOracle {
     uint public ethPriceInEur;
     uint public lastUpdated;
     
-    event PriceUpdated(uint newPrice, uint timestamp);
-    
     modifier onlyOwner() {
         require(msg.sender == owner, "Funzione riservata al proprietario");
         _;
@@ -22,11 +20,9 @@ contract PriceOracle {
     function updatePrice(uint _newPrice) external onlyOwner {
         ethPriceInEur = _newPrice;
         lastUpdated = block.timestamp;
-        emit PriceUpdated(_newPrice, block.timestamp);
     }
 
-    function convertEurToWei(uint eurAmount) external view returns (uint) {
-        require(ethPriceInEur > 0, "Valore ETH non impostato");
-        return (eurAmount * 1 ether) / ethPriceInEur;
+    function convertEurToWei(uint rentAmount) external view returns (uint) {
+        return (rentAmount * 1 ether) / ethPriceInEur;
     }
 }
