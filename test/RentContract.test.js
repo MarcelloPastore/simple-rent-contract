@@ -65,9 +65,10 @@ contract("RentContract", (accounts) => {
     const currentMonth = await timeOracle.getCurrentMonth();
     
     await rentContract.payCurrentMonthRent({ from: tenant1, value: rentInWei });
+    const { tenant1Paid, tenant2Paid, fullyPaid } = await rentContract.getMonthPaymentStatus(currentMonth);
 
-    assert.equal(await rentContract.isTenantPaidForMonth(tenant1, currentMonth), true);
-    assert.equal(await rentContract.isTenantPaidForMonth(tenant2, currentMonth), false);
-    assert.equal(await rentContract.isRentPaid(currentMonth), false);
+    assert.equal(tenant1Paid, true);
+    assert.equal(tenant2Paid, false);
+    assert.equal(fullyPaid, false);
   });
 });

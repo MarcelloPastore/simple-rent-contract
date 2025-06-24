@@ -13,7 +13,6 @@ contract RentContract {
     PriceOracle public priceOracle;
     
     mapping(uint => mapping(address => bool)) public tenantPaidForMonth;
-    mapping(uint => address) public whoCanPayForMonth;
 
     modifier onlyLandlord() {
         require(msg.sender == landlord, "Funzione riservata al proprietario");
@@ -46,10 +45,6 @@ contract RentContract {
         require(msg.value >= requiredWei, "Importo insufficiente");
         require(!tenantPaidForMonth[month][msg.sender], "Affitto pagato per questo mese");
         require(timeOracle.isPaymentDue(month), "Pagamento non dovuto questo mese");
-
-        if (whoCanPayForMonth[month] != address(0)) {
-            require(msg.sender == whoCanPayForMonth[month], "Inquilino sbagliato");
-        }
 
         tenantPaidForMonth[month][msg.sender] = true;
         
@@ -85,24 +80,6 @@ contract RentContract {
         priceOracle = PriceOracle(_priceOracle);
     }
 
-    function updateRentAmount(uint _newRentAmountEur) external onlyLandlord {
-        rentAmountEur = _newRentAmountEur;
-    }
-
-    function assignTenantForMonth(uint month, address tenant) external onlyLandlord {
-        require(tenant == tenant1 || tenant == tenant2, "Indirizzo inquilino non valido");
-        require(!isRentPaid(month), "Errore pagamento");
-        whoCanPayForMonth[month] = tenant;
-    }
-
-    function forcePayment(uint month) external onlyLandlord {
-        require(!isRentPaid(month), "Affitto pagato per questo mese");
-        require(timeOracle.isPaymentDue(month), "Pagamento non ancora dovuto per questo mese");
-
-        tenantPaidForMonth[month][tenant1] = true;
-        tenantPaidForMonth[month][tenant2] = true;
-    }
-
     function getMonthPaymentStatus(uint month) external view returns (bool tenant1Paid, bool tenant2Paid, bool fullyPaid) {
         tenant1Paid = tenantPaidForMonth[month][tenant1];
         tenant2Paid = tenantPaidForMonth[month][tenant2];
@@ -127,9 +104,5 @@ contract RentContract {
         }
         
         return result;
-    }
-
-    function isTenantPaidForMonth(address tenant, uint month) public view returns (bool) {
-        return tenantPaidForMonth[month][tenant];
     }
 }
