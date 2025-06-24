@@ -2,10 +2,6 @@
 
 echo "--- Avvio del contratto ---"
 
-cd ../Applications/ganache
-./ganache-2.7.1-linux-x86_64.AppImage &
-cd ../../simple-rent-contract
-
 while ! nc -z localhost 8545; do
     sleep 1
 done
